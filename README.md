@@ -19,6 +19,11 @@ Use the following command to create the environment named as videoagent:
 conda env create -f environment.yaml
 ```
 
+위 방식대로 conda 환경을 만드니... gensim 빌드가 실패했다는 오류가 떴다...
+그래서 나는 그냥 `pip install gensim`으로 gensim을 다시 설치하였으며...
+gensim-4.3.3 버전이 설치되었음을 확인하였다.
+
+
 Create the environment of [Video-LLaVA](https://github.com/PKU-YuanGroup/Video-LLaVA) by running the following command:
 ```sh
 git clone https://github.com/PKU-YuanGroup/Video-LLaVA
@@ -28,9 +33,15 @@ conda activate videollava
 pip install --upgrade pip  # enable PEP 660 support
 pip install -e .
 pip install -e ".[train]"
-pip install flash-attn --no-build-isolation
+pip install flash-attn==2.7.4.post1 --no-build-isolation
 pip install decord opencv-python git+https://github.com/facebookresearch/pytorchvideo.git@28fe037d212663c6a24f373b94cc5d478c8c1a1d
 ```
+
+위 방식대로 할 때 `pip install flash-attn --no-build-isolation` 코드가 오류가 남...
+나는 cuda 11.7 버전 pc에서 실험했을 때 결과임. (Video LLava는 torch 2.0.1을 쓰라고 함.)
+-> FlashAttention은 PyTorch 2.2 버전부터 공식적으로 통합되어 성능 향상이 이루어졌습니다. 따라서, PyTorch 2.0.1과 호환되는 FlashAttention의 공식 버전은 제공되지 않을 수 있습니다.
+-> 쓰바! 내가 pyproject.toml에 torch 최소 버전 높여버림!!!
+
 Note: Only the conda envrionment named videollava is required for this project, while the Video-LLaVA repository is not required. You can clone Video-LLaVA repository to anywhere you want and build the conda environment named videollava.
 
 Download the ```cache_dir.zip``` and ```tool_models.zip``` from [here](https://zenodo.org/records/11031717) and unzip them to the directory of ```VideoAgent```. This will create two folder ```cache_dir```(the model weights of VideoLLaVA) and ```tool_models```(the model weights of all other models) under ```VideoAgent```.
